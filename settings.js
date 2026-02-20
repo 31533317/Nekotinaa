@@ -12,7 +12,7 @@ global.api = {
   url2: 'https://api.stellarwa.xyz',
   url3: 'https://sylphy.xyz',
   key: 'evogb-UAXrKG3d',
-  key2: 'proyectsV2', //saca ru apikey en la web stellarwa.xyz
+  key2: 'api-E7tjU', //saca ru apikey en la web stellarwa.xyz
   key3: 'ApiKey' //saca tu apikey en la web sylphy.xyz
 }
 
