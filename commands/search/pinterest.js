@@ -15,7 +15,7 @@ export default {
 
     try {
       if (isPinterestUrl) {
-        const pinterestUrl = `https://api.stellarwa.xyz/search/pinterest?query=Cr7&key=api-E7tjU`
+        const pinterestUrl = `https://api.evogb.org/dl/pinterest?url=${text}&key=proyectsV2`
         const ress = await fetch(pinterestUrl)
         if (!ress.ok) throw new Error(`La API devolvió un código de error: ${ress.status}`)
 
@@ -34,7 +34,7 @@ export default {
           { quoted: m },
         )
       } else {
-        const pinterestAPI = `https://api.evogb.org/search/pinterest?query=${text}&key=proyectsV2`
+        const pinterestAPI = `https://api.evogb.org/search/pinterest?query=${text}&key=evogb-IOp2Gu7J`
         const res = await fetch(pinterestAPI)
         if (!res.ok) throw new Error(`La API devolvió un código de error: ${res.status}`)
 
