@@ -15,7 +15,7 @@ export default {
 
     try {
       if (isPinterestUrl) {
-        const pinterestUrl = `https://api.evogb.org/dl/pinterest?url=${text}&key=proyectsV2`
+        const pinterestUrl = `https://api.evogb.org/dl/pinterest?url=${text}&key=api-E7tjU`
         const ress = await fetch(pinterestUrl)
         if (!ress.ok) throw new Error(`La API devolvió un código de error: ${ress.status}`)
 
