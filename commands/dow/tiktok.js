@@ -14,7 +14,7 @@ export default {
     if (urls.length) {
       for (const url of urls) {
         try {
-          const apiUrl = `https://api.evogb.org/dl/tiktok?url=${url}&key=evogb-UAXrKG3d`
+          const apiUrl = `https://api.evogb.org/dl/tiktok?url=${url}&key=nekotina`
           const res = await fetch(apiUrl)
           if (!res.ok) throw new Error(`El servidor respondió con ${res.status}`)
           const json = await res.json()
