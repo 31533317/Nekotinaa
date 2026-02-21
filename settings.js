@@ -11,7 +11,7 @@ global.api = {
   url: 'https://api.evogb.org',
   url2: 'https://api.stellarwa.xyz',
   url3: 'https://sylphy.xyz',
-  key: 'evogb-UAXrKG3d',
+  key: 'nekotina',
   key2: 'api-E7tjU', //saca ru apikey en la web stellarwa.xyz
   key3: 'ApiKey' //saca tu apikey en la web sylphy.xyz
 }
