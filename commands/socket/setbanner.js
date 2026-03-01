@@ -1,26 +1,22 @@
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 
-async function uploadToTelegraph(buffer, mime) {
+async function uploadToImgBB(buffer) {
   const form = new FormData();
-  form.append('file', buffer, {
-    filename: `${Date.now()}.${mime.split('/')[1]}`,
-    contentType: mime
-  });
+  // Consigue tu llave gratis en https://api.imgbb.com/
+  const apiKey = 'TU_API_KEY_AQUI'; 
+  form.append('image', buffer.toString('base64'));
 
-  const res = await fetch('https://telegra.ph/upload', {
+  const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
     method: 'POST',
     body: form
   });
 
   const json = await res.json();
+  if (!json.success) throw new Error('Error al subir a ImgBB: ' + json.error.message);
   
-  if (json.error) {
-    throw new Error('Falló la subida a Telegraph: ' + json.error);
-  }
-
-  // Telegraph devuelve un array, tomamos el primer archivo
-  return 'https://telegra.ph' + json[0].src;
+  // Este enlace es directo, permanente y garantiza que la foto se vea
+  return json.data.url;
 }
 
 export default {
@@ -34,13 +30,8 @@ export default {
 
     const value = args.join(' ').trim();
 
-    if (
-      !value &&
-      !m.quoted &&
-      !m.message.imageMessage &&
-      !m.message.videoMessage
-    )
-      return m.reply('🍒 Debes enviar o citar una imagen o video para cambiar el banner del bot.');
+    if (!value && !m.quoted && !m.message.imageMessage && !m.message.videoMessage)
+      return m.reply('🍒 Debes enviar o citar una imagen para cambiar el banner del bot.');
 
     if (value.startsWith('http')) {
       config.banner = value;
@@ -50,16 +41,20 @@ export default {
     const q = m.quoted ? m.quoted : m.message.imageMessage ? m : m;
     const mime = (q.msg || q).mimetype || q.mediaType || '';
 
-    if (!/image\/(png|jpe?g|gif)|video\/mp4/.test(mime))
-      return m.reply('🍒 Responde a una imagen o video válido.');
+    if (!/image\/(png|jpe?g|gif)/.test(mime))
+      return m.reply('🍒 Por favor, usa una imagen válida (PNG/JPG).');
 
     const media = await q.download();
-    if (!media) return m.reply(',🍒 No se pudo descargar el archivo.');
+    if (!media) return m.reply('🍒 No se pudo descargar la imagen.');
 
-    // He cambiado Catbox por Telegraph para mayor estabilidad y persistencia
-    const link = await uploadToTelegraph(media, mime);
-    config.banner = link;
+    m.reply('⏳ Subiendo imagen a servidor permanente...');
 
-    return m.reply(`🌾 Se ha actualizado el banner de *${config.namebot2}*!`);
+    try {
+      const link = await uploadToImgBB(media);
+      config.banner = link;
+      return m.reply(`✅ ¡Banner actualizado!\n🔗 Link: ${link}`);
+    } catch (e) {
+      return m.reply('❌ Error al subir: ' + e.message);
+    }
   },
 };
