@@ -1,25 +1,26 @@
 import fetch from 'node-fetch';
 import FormData from 'form-data';
 
-async function uploadToCatbox(buffer, mime) {
+async function uploadToTelegraph(buffer, mime) {
   const form = new FormData();
-  form.append('reqtype', 'fileupload');
-  form.append('fileToUpload', buffer, {
+  form.append('file', buffer, {
     filename: `${Date.now()}.${mime.split('/')[1]}`,
     contentType: mime
   });
 
-  const res = await fetch('https://catbox.moe/user/api.php', {
+  const res = await fetch('https://telegra.ph/upload', {
     method: 'POST',
     body: form
   });
 
-  const url = await res.text();
-  if (!url.startsWith('http')) {
-    throw new Error('Falló la subida a Catbox: ' + url);
+  const json = await res.json();
+  
+  if (json.error) {
+    throw new Error('Falló la subida a Telegraph: ' + json.error);
   }
 
-  return url;
+  // Telegraph devuelve un array, tomamos el primer archivo
+  return 'https://telegra.ph' + json[0].src;
 }
 
 export default {
@@ -55,7 +56,8 @@ export default {
     const media = await q.download();
     if (!media) return m.reply(',🍒 No se pudo descargar el archivo.');
 
-    const link = await uploadToCatbox(media, mime);
+    // He cambiado Catbox por Telegraph para mayor estabilidad y persistencia
+    const link = await uploadToTelegraph(media, mime);
     config.banner = link;
 
     return m.reply(`🌾 Se ha actualizado el banner de *${config.namebot2}*!`);
